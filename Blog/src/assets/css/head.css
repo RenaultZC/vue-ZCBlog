@@ -1,0 +1,118 @@
+#head{
+  width: 720px;
+  height:4rem;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  position: relative;
+}
+#head ul{
+  width: 50%;
+  height: 100%;
+  list-style: none;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  float: left;
+}
+#head ul li{
+  width:90px;
+  float: left;
+  text-align: center;
+  font-size:1rem;
+  position: relative;
+}
+#head ul li::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 90px;
+  height: 2px;
+  background: #87ceeb;
+  transition: 0.5s;
+  transform: scaleX(0);
+  transform-origin: 100% 0;
+}
+#head ul li:hover::before{
+  transform-origin: 0 0;
+  transform: scaleX(1);
+}
+#head ul li:hover,#login:hover{
+  cursor: pointer;
+  color: darkorange;
+}
+.head-content{
+  width: 100%;
+  height: 2rem;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  position: absolute;
+  overflow: hidden;
+}
+.head-right{
+  width: 40%;
+  float: right;
+}
+.head-search{
+  width: 70%;
+  border: 1px solid lightgray;
+  overflow: hidden;
+  position: relative;
+  border-radius:1rem ;
+  float: left;
+}
+.head-search input{
+  width: 80%;
+  border: 0;
+  height: 1.5rem;
+  float: left;
+  font-size: 1rem;
+  outline: none;
+  margin-left: 0.7rem;
+}
+.head-search img{
+  width: 1.5rem;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+}
+.point:hover{
+  cursor: pointer;
+}
+.userLogin,.userInfo{
+  width: 29%;
+  height: 1.5rem;
+  float: right;
+}
+#login{
+  width: 3rem;
+  margin:0 20px;
+  background-color: transparent;
+  border: 0;
+  font-size: 1rem;
+  display: block;
+  outline: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.fade-enter{
+  opacity: 0;
+}
+.fade-enter-active{
+  transition:opacity .5s;
+}
+.fade-leave{
+  opacity:1;
+}
+.fade-leave-active{
+  opacity: 0;
+  transition:opacity .5s;
+}
