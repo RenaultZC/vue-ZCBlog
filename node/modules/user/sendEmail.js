@@ -10,14 +10,13 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-let sendEmail = (email,code)=>{
-    let date = `http://blog.zhangchaoweb.xin/activation?code=${code}&callback=activation`;
+let sendEmail = (email,date,link)=>{
     let result = null;
     let mailOptions = {
         from:'1073294992@qq.com',
         to:email,
-        subject:'账号激活',//标题
-        html:`<h2><a href=${date}>点此链接</a>激活账号</h2>`
+        subject:date,//标题
+        html:`<h2><a href=${link}>点此链接</a>${date}</h2>`
     };
     transporter.sendMail(mailOptions,(err,info)=>{
         if(err){

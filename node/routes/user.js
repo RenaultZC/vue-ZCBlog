@@ -7,6 +7,7 @@ let login = require('../modules/user/login');
 let activation = require('../modules/user/activation');
 let returnJson = require('../modules/returnJson');
 let getInfo = require('../modules/user/getInfo');
+let updatePassword = require('../modules/user/updatePassword');
 let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 
 //register
@@ -61,18 +62,19 @@ router.use('/login',(req,res)=>{
 
 //activation
 router.use('/activation',(req,res)=>{
-    let code,callback,validate,result = null;
-    console.log(req.session);
-    validate = req.session["validate"];
+    let code,callback,validate,email,result = null;
     if(req.query.code){
         code = req.query.code;
         callback = req.query.callback;
+        email = req.query.email;
     }else if(req.body.code){
         code = req.body.code;
         callback = req.body.callback;
+        email = req.body.email;
     }
+    validate = req.session[email];
     if(code && validate){
-        req.session['validate'] = null;
+        req.session[email] = null;
         activation(db,code,validate,(result)=>{
             returnJson(res,result,callback);
         })
@@ -89,35 +91,33 @@ router.use('/activation',(req,res)=>{
         }
     }
 });
+
 //getInfo
 router.use('/getInfo',(req,res)=>{
-    let callback,code,result;
-    if(req.body.code){
+    let callback,code,email,result;
+    if(req.body.email){
         callback = req.body.callback;
+        email = req.body.email;
         code = req.body.code;
-    }else if(req.query.code){
+    }else if(req.query.email){
         callback = req.query.callback;
+        email = req.query.email;
         code = req.query.code;
     }
-    let sessionUser = req.session["user"];
+    let sessionUser = req.session[email];
     if(sessionUser && code){
-        if(sessionUser.code===code){
+        if(sessionUser.code === code){
             getInfo(db,sessionUser.email,(result)=>{
-                returnJson(res.result,callback);
+                returnJson(res,result,callback);
             });
         }else{
             result = {
                 error:true,
-                result:"session不匹配，请勿恶意访问"
+                result:"用户已经被登录，请重新登录或者修改密码"
             };
             returnJson(res,result,callback);
         }
-    }else if(code){
-        result = {
-            error:true,
-            result:"用户未登录"
-        };
-        returnJson(res,result,callback);
+
     }else{
         result = {
             error:true,
@@ -125,6 +125,48 @@ router.use('/getInfo',(req,res)=>{
         };
         returnJson(res,result,callback);
     }
+
+});
+
+//updatePassword
+router.use('/updatePassword',(req,res)=>{
+    let email,code,newPassword,callback,result;
+    if(req.body.email){
+        newPassword = req.body.newPassword;
+        email = req.body.email;
+        code = req.body.code;
+        callback = req.body.callback;
+    }else if(req.query.email){
+        email = req.query.email;
+        newPassword = req.query.newPassword;
+        code = req.query.code;
+        callback = req.query.callback;
+    }
+    let sessionUser = req.session[email];
+    if(sessionUser && code){
+        if(sessionUser.code === code){
+            updatePassword(db,email,newPassword,(result)=>{
+                returnJson(res,result,callback);
+            });
+        }else{
+            result = {
+                error:true,
+                result:"验证已过期，请重新申请"
+            };
+            returnJson(res,result,callback);
+        }
+
+    }else{
+        result = {
+            error:true,
+            result:"用户验证未成功"
+        };
+        returnJson(res,result,callback);
+    }
+});
+
+//forgetPassword
+router.use('/forgetPassword',(req,res)=>{
 
 });
 
