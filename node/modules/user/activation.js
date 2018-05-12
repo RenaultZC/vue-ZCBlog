@@ -1,8 +1,8 @@
 let activation = (db,code,validate,callback)=>{
     let result = null;
-    let email = validate.email,passwrod = validate.password;
+    let email = validate.email,password = validate.password;
     if(code === validate.code){
-        db.query(`INSERT INTO user (email,password,flag) VALUE("${email}","${passwrod}","0")`,(err,data)=>{
+        db.query(`INSERT INTO user (email,password,flag) VALUE("${email}","${password}","0")`,(err,data)=>{
             if(err){
                 result = {
                     error:true,

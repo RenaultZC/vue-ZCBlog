@@ -8,6 +8,7 @@ let activation = require('../modules/user/activation');
 let returnJson = require('../modules/returnJson');
 let getInfo = require('../modules/user/getInfo');
 let updatePassword = require('../modules/user/updatePassword');
+let forgetPassword = require('../modules/user/forgetPassword');
 let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 
 //register
@@ -167,7 +168,26 @@ router.use('/updatePassword',(req,res)=>{
 
 //forgetPassword
 router.use('/forgetPassword',(req,res)=>{
-
+    let newPassword,email,callback,result = null;
+    if(req.body.email){
+        email = req.body.email;
+        newPassword = req.body.newPassword;
+        callback = req.body.callback;
+    }else if(req.query.email){
+        email = req.query.email;
+        newPassword = req.query.newPassword;
+        callback = req.query.callback;
+    }
+    if(email){
+        forgetPassword(req,db,email,newPassword,(result)=>{
+            returnJson(res,result,callback);
+        })
+    }else{
+        result = {
+            error:true,
+            result:"请输入要修改账号和新密码"
+        }
+    }
 });
 
 module.exports = router;

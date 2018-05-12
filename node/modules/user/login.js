@@ -9,26 +9,30 @@ let login = (req,db,email,password,callback)=>{
                 result:"数据库出错"
             };
         }else{
-            if(data.lenght === 0){
+            if(data.length === 0){
                 result = {
                     error:true,
                     false:"用户不存在"
                 };
             }else{
                 if(password === data[0].password){
-                    result = {
-                        error:true,
-                        result:"用户名或者密码不正确"
-                    };
-                }else{
                     let code = "sig_"+Math.random();
                     req.session[email] = {
                         email:email,
+                        flag:data[0].flag,
                         code:code
                     };
                     result = {
+                        error:false,
+                        result:{
+                            code:code,
+                            flag:data[0].flag
+                        }
+                    };
+                }else{
+                    result = {
                         error:true,
-                        result:code
+                        result:"用户名或者密码不正确"
                     };
                 }
             }

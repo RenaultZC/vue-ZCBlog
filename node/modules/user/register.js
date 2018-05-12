@@ -24,7 +24,7 @@ let register = (req,db,email,password,callback)=>{
             }else if(err){
                 result = {
                     error:true,
-                    result:err
+                    result:"数据库出错"
                 }
             }else{
                 result = {
