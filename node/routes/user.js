@@ -9,6 +9,7 @@ let returnJson = require('../modules/returnJson');
 let getInfo = require('../modules/user/getInfo');
 let updatePassword = require('../modules/user/updatePassword');
 let forgetPassword = require('../modules/user/forgetPassword');
+let article = require('../modules/article');
 let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 
 //register
@@ -63,7 +64,7 @@ router.use('/login',(req,res)=>{
 
 //activation
 router.use('/activation',(req,res)=>{
-    let code,callback,validate,email,result = null;
+    let code,callback,session,email,result = null;
     if(req.query.code){
         code = req.query.code;
         callback = req.query.callback;
@@ -73,13 +74,13 @@ router.use('/activation',(req,res)=>{
         callback = req.body.callback;
         email = req.body.email;
     }
-    validate = req.session[email];
-    if(code && validate){
+    session = req.session[email];
+    if(code && session){
         req.session[email] = null;
-        activation(db,code,validate,(result)=>{
+        activation(db,code,session,(result)=>{
             returnJson(res,result,callback);
         })
-    }else if(validate){
+    }else if(session){
         result = {
             error:true,
             result:"注册失败，请重新注册"
@@ -189,5 +190,8 @@ router.use('/forgetPassword',(req,res)=>{
         }
     }
 });
+
+// article
+router.use('/article',article);
 
 module.exports = router;
