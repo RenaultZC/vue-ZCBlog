@@ -9,8 +9,9 @@ let returnJson = require('../modules/returnJson');
 let getInfo = require('../modules/user/getInfo');
 let updatePassword = require('../modules/user/updatePassword');
 let forgetPassword = require('../modules/user/forgetPassword');
+let decryption = require('../modules/decryption');
 let article = require('../modules/article');
-let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'*****',database:'blog'});
 
 //register
 router.use('/register',(req,res)=>{
@@ -24,6 +25,7 @@ router.use('/register',(req,res)=>{
         password = req.query.password;
         callback = req.query.callback;
     }
+    password = decryption(password);
     if(username){
         register(req,db,username,password,(result)=>{
             returnJson(res,result,callback);
@@ -49,6 +51,7 @@ router.use('/login',(req,res)=>{
         callback = req.body.callback;
         password = req.body.password;
     }
+    password = decryption(password);
     if(email){
         login(req,db,email,password,(result)=>{
             returnJson(res,result,callback);
@@ -144,6 +147,7 @@ router.use('/updatePassword',(req,res)=>{
         code = req.query.code;
         callback = req.query.callback;
     }
+    newPassword = decryption(newPassword);
     let sessionUser = req.session[email];
     if(sessionUser && code){
         if(sessionUser.code === code){
@@ -179,6 +183,7 @@ router.use('/forgetPassword',(req,res)=>{
         newPassword = req.query.newPassword;
         callback = req.query.callback;
     }
+    newPassword = decryption(newPassword);
     if(email){
         forgetPassword(req,db,email,newPassword,(result)=>{
             returnJson(res,result,callback);

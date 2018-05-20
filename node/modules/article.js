@@ -2,7 +2,7 @@ const express = require('express');
 let router = express.Router();
 const mysql = require('mysql');
 
-let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'******',database:'blog'});
 let returnJson = require("./returnJson");
 let add = require("./article/add");
 let deleted = require("./article/delete");
@@ -78,38 +78,19 @@ router.use('/delete',(req,res)=>{
     }
 });
 
+//update
+
 //search
 router.use('/search',(req,res)=>{
-    let email,code,flag,callback,session,result = null;
-    if(req.query.code){
-        email =  req.query.email;
-        code =  req.query.code;
-        flag =  req.query.flag;
+    let email,callback,type,session,result = null;
+    if(req.query.type){
+        email = req.query.type;
+        type = req.query.type;
         callback =  req.query.callback;
     }
-    session = req.session[email];
-    if(session && code){
-        if(session.code === code){
-            if(session.flag == 0){
-                flag==1?'0':flag;
-            }
-            search(db,email,flag,(result)=>{
-                returnJson(res,result,callback);
-            })
-        }else{
-            result = {
-                error:true,
-                result:"用户登录失效"
-            };
-            returnJson(res,result,callback);
-        }
-    }else{
-        result = {
-            error:true,
-            result:"用户未登录"
-        };
+    search(db,email,type,(result)=>{
         returnJson(res,result,callback);
-    }
+    });
 });
 
 module.exports = router;

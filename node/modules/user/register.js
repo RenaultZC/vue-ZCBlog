@@ -34,16 +34,16 @@ let register = (req,db,email,password,callback)=>{
             }
             callback(result);
         });
-    }else if(usernameReg.test(username)){
+    }else if(usernameReg.test(email)){
         result = {
             error:true,
-            result:'用户名不符合要求请重新输入'
+            result:'密码不符合要求请重新输入'
         };
         callback(result);
     }else{
         result = {
             error:true,
-            result:'密码不符合要求请重新输入'
+            result:'用户名不符合要求请重新输入'
         };
         callback(result);
     }

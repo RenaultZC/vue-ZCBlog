@@ -1,8 +1,8 @@
 let search = (db,email,flag,callback)=>{
     let result = null;
     switch (flag){
-        case '0':
-            db.query(`SELECT * FROM blog WHERE author="${email}"`,(err,data)=>{
+        case 'email':
+            db.query(`SELECT * FROM blog WHERE author="${email} ORDER BY ID DESC"`,(err,data)=>{
                 if(err){
                     result = {
                         error:true,
@@ -24,8 +24,8 @@ let search = (db,email,flag,callback)=>{
                 callback(result);
             });
             break;
-        case '1':
-            db.query(`SELECT * FROM blog"`,(err,data)=>{
+        case 'all':
+            db.query(`SELECT * FROM blog ORDER BY ID DESC"`,(err,data)=>{
                 if(err){
                     result = {
                         error:true,
@@ -48,7 +48,7 @@ let search = (db,email,flag,callback)=>{
             });
             break;
         default:
-            db.query(`SELECT * FROM blog WHERE title like "%${flag}" or title like "%${flag}%" or title like "${flag}%"`,(err,data)=>{
+            db.query(`SELECT * FROM blog WHERE title like "%${flag}" or title like "%${flag}%" or title like "${flag}%" ORDER BY ID DESC`,(err,data)=>{
                 if(err){
                     result = {
                         error:true,
