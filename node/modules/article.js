@@ -2,7 +2,7 @@ const express = require('express');
 let router = express.Router();
 const mysql = require('mysql');
 
-let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'*******',database:'blog'});
 let returnJson = require("./returnJson");
 let add = require("./article/add");
 let deleted = require("./article/delete");
