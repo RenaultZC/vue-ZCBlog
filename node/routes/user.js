@@ -11,7 +11,7 @@ let updatePassword = require('../modules/user/updatePassword');
 let forgetPassword = require('../modules/user/forgetPassword');
 let decryption = require('../modules/decryption');
 let article = require('../modules/article');
-let db = mysql.createPool({host:'localhost',user:'web',password:'*****',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 
 //register
 router.use('/register',(req,res)=>{
@@ -77,9 +77,9 @@ router.use('/activation',(req,res)=>{
         callback = req.body.callback;
         email = req.body.email;
     }
-    session = req.session[email];
+    session = req.session['user'];
     if(code && session){
-        req.session[email] = null;
+        req.session['user'] = null;
         activation(db,code,session,(result)=>{
             returnJson(res,result,callback);
         })
@@ -100,16 +100,16 @@ router.use('/activation',(req,res)=>{
 //getInfo
 router.use('/getInfo',(req,res)=>{
     let callback,code,email,result;
-    if(req.body.email){
+    if(req.body.code){
         callback = req.body.callback;
         email = req.body.email;
         code = req.body.code;
-    }else if(req.query.email){
+    }else if(req.query.code){
         callback = req.query.callback;
         email = req.query.email;
         code = req.query.code;
     }
-    let sessionUser = req.session[email];
+    let sessionUser = req.session['user'];
     if(sessionUser && code){
         if(sessionUser.code === code){
             getInfo(db,sessionUser.email,(result)=>{
@@ -118,7 +118,7 @@ router.use('/getInfo',(req,res)=>{
         }else{
             result = {
                 error:true,
-                result:"用户已经被登录，请重新登录或者修改密码"
+                result:"用户登录已经失效，请重新登录"
             };
             returnJson(res,result,callback);
         }
@@ -148,7 +148,7 @@ router.use('/updatePassword',(req,res)=>{
         callback = req.query.callback;
     }
     newPassword = decryption(newPassword);
-    let sessionUser = req.session[email];
+    let sessionUser = req.session['user'];
     if(sessionUser && code){
         if(sessionUser.code === code){
             updatePassword(db,email,newPassword,(result)=>{
@@ -157,7 +157,7 @@ router.use('/updatePassword',(req,res)=>{
         }else{
             result = {
                 error:true,
-                result:"验证已过期，请重新申请"
+                result:"验证已过期，请重新申请或登录"
             };
             returnJson(res,result,callback);
         }

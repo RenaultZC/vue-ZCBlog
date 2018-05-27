@@ -2,7 +2,7 @@ const express = require('express');
 let router = express.Router();
 const mysql = require('mysql');
 
-let db = mysql.createPool({host:'localhost',user:'web',password:'******',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 let returnJson = require("./returnJson");
 let add = require("./article/add");
 let deleted = require("./article/delete");
@@ -20,7 +20,7 @@ router.use('/add',(req,res)=>{
         content = req.body.content;
         callback = req.body.callback;
     }
-    session = req.session[email];
+    session = req.session['user'];
     if(session&&code){
         if(session.code===code){
             add(db,title,type,author,content,(result)=>{
@@ -56,7 +56,7 @@ router.use('/delete',(req,res)=>{
         callback = req.body.callback;
         email = req.body.email;
     }
-    session = req.session[email];
+    session = req.session['user'];
     if(session&&code){
         if(session.code===code){
             deleted(db,session.email,ID,(result)=>{
@@ -82,9 +82,9 @@ router.use('/delete',(req,res)=>{
 
 //search
 router.use('/search',(req,res)=>{
-    let email,callback,type,session,result = null;
+    let email,callback,type;
     if(req.query.type){
-        email = req.query.type;
+        email = req.query.email;
         type = req.query.type;
         callback =  req.query.callback;
     }

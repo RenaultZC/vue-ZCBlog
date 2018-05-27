@@ -13,7 +13,7 @@ let forgetPassword = (req,db,email,newPassword,callback)=>{
             if(data.length){
                 newPassword = encryption(newPassword);
                 let code = "sig_"+Math.random();
-                req.session[email] = {
+                req.session['user'] = {
                     email:email,
                     code:code
                 };

@@ -25,11 +25,11 @@ let search = (db,email,flag,callback)=>{
             });
             break;
         case 'all':
-            db.query(`SELECT * FROM blog ORDER BY ID DESC"`,(err,data)=>{
+            db.query(`SELECT * FROM blog ORDER BY ID DESC`,(err,data)=>{
                 if(err){
                     result = {
                         error:true,
-                        result:"数据库出错"
+                        result:err
                     };
                 }else{
                     if(data.length){

@@ -10,7 +10,7 @@ let register = (req,db,email,password,callback)=>{
         db.query(`SELECT * from user WHERE email="${email}"`,(err,data)=>{
             if(!err && data.length === 0){
                 let code = "sig_"+Math.random();
-                req.session[email] = {
+                req.session['user'] = {
                     email:email,
                     password:password,
                     code:code

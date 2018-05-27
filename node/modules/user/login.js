@@ -17,7 +17,7 @@ let login = (req,db,email,password,callback)=>{
             }else{
                 if(password === data[0].password){
                     let code = "sig_"+Math.random();
-                    req.session[email] = {
+                    req.session['user'] = {
                         email:email,
                         flag:data[0].flag,
                         code:code
