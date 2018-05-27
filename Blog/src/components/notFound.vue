@@ -6,7 +6,7 @@
     export default {
         name: "notFound",
         beforeCreate:function(){
-          document.getElementById("title").innerText = "404 Not Found";
+          document.getElementById("title").innerText = "找不到该页面";
         }
     }
 </script>

@@ -22,6 +22,7 @@
   text-align: center;
   font-size:1rem;
   position: relative;
+  margin-top: 2px;
 }
 #head ul li::before{
   content: "";
@@ -39,7 +40,7 @@
   transform-origin: 0 0;
   transform: scaleX(1);
 }
-#head ul li:hover,#login:hover{
+#head ul li:hover,.button:hover{
   cursor: pointer;
   color: darkorange;
 }
@@ -55,11 +56,11 @@
   overflow: hidden;
 }
 .head-right{
-  width: 40%;
+  width: 45%;
   float: right;
 }
 .head-search{
-  width: 70%;
+  width: 60%;
   border: 1px solid lightgray;
   overflow: hidden;
   position: relative;
@@ -86,21 +87,21 @@
   cursor: pointer;
 }
 .userLogin,.userInfo{
-  width: 29%;
+  width: 39%;
   height: 1.5rem;
-  float: right;
+  float: left;
 }
-#login{
-  width: 3rem;
-  margin:0 20px;
+.button{
+  width: auto;
+  margin-top: 2px;
+  margin-left:10px;
   background-color: transparent;
+  padding: 0;
   border: 0;
   font-size: 1rem;
   display: block;
   outline: none;
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  float: left;
 }
 
 .fade-enter{
@@ -115,4 +116,8 @@
 .fade-leave-active{
   opacity: 0;
   transition:opacity .5s;
+}
+.login-img{
+  height: 100%;
+  margin-left: 45%;
 }

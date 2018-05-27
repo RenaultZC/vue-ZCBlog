@@ -8,7 +8,7 @@
     export default {
         name: "blog-page",
         beforeCreate:function(){
-          document.getElementById("title").innerText = "Blog";
+          document.getElementById("title").innerText = "博客";
         }
     }
 </script>

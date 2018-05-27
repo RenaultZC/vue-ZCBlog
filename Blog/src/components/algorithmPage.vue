@@ -10,7 +10,7 @@
     export default {
         name: "algorithm-page",
         beforeCreate:function(){
-          document.getElementById("title").innerText = "Algorithm";
+          document.getElementById("title").innerText = "算法";
         }
     }
 </script>

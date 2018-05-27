@@ -7,11 +7,14 @@ import algorithmPage from '@/components/algorithmPage'
 import introducePage from '@/components/introducePage'
 import notFound from '@/components/notFound'
 import home from '@/components/home'
+import login from '@/components/login'
+import register from '@/components/register'
+import forgetPassword from '@/components/forgetPassword'
 
 Vue.use(Router);
 
 export default new Router({
-  mode:'history',
+  mode:'hash',
   routes: [
     {
       path: '/',
@@ -26,13 +29,12 @@ export default new Router({
         {path:'/homePage',component:homePage},
         {path:'/blogPage',component:blogPage},
         {path:'/algorithmPage',component:algorithmPage},
-        {path:'/introducePage',component:introducePage}
+        {path:'/introducePage',component:introducePage},
+        {path:'/login',component:login},
+        {path:'/register',component:register},
+        {path:'/forgetPassword',component:forgetPassword},
+        {path:'/*',component:notFound}
       ]
-    },
-    {
-      path: '*',
-      name: '404NotFound',
-      component: notFound
     }
   ]
 })

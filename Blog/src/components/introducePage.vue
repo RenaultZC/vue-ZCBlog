@@ -8,7 +8,7 @@
     export default {
         name: "introduce-page",
         beforeCreate:function(){
-          document.getElementById("title").innerText = "Introduce";
+          document.getElementById("title").innerText = "自我介绍";
         }
     }
 </script>

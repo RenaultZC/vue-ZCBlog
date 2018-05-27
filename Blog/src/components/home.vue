@@ -5,10 +5,10 @@
       <div class="content-logo"></div>
       <div class="content-motto">{{contentMotto}}</div>
       <div class="content-link">
-        <a href="./homePage">Blog</a>
-        <a href="./algorithmPage">Algorithm</a>
+        <router-link tag="a" to="/homePage">Blog</router-link>
+        <router-link tag="a" to="/algorithmPage">Algorithm</router-link>
         <a href="https://github.com/RenaultZC">GitHub</a>
-        <a href="./rewardPage">Reward</a>
+        <router-link tag="a" to="/rewardPage">Reward</router-link>
       </div>
     </div>
   </div>
@@ -47,6 +47,10 @@
 </script>
 
 <style scoped>
+  #canvas{
+    margin: 0;
+    padding: 0;
+  }
   #content{
     position: absolute;
     top: 0;

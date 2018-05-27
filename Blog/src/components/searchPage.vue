@@ -8,7 +8,7 @@
     export default {
         name: "search-page",
         beforeCreate:function(){
-          document.getElementById("title").innerText = "Search";
+          document.getElementById("title").innerText = "搜索";
         }
     }
 </script>
