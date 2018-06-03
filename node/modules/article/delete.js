@@ -1,4 +1,4 @@
-let deleted = (db,ID,callback)=>{
+let deleted = (db,ID,email,callback)=>{
     let result = null;
     db.query(`SELECT * FROM blog WHERE ID="${ID}"`,(err,data)=>{
         if(err){

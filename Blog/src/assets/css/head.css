@@ -6,17 +6,16 @@
   margin: 0 auto;
   position: relative;
 }
-#head ul{
+.head-left{
   width: 50%;
   height: 100%;
   list-style: none;
-  overflow: hidden;
   margin: 0;
   padding: 0;
   background-color: white;
   float: left;
 }
-#head ul li{
+.head-left li{
   width:90px;
   float: left;
   text-align: center;
@@ -24,7 +23,7 @@
   position: relative;
   margin-top: 2px;
 }
-#head ul li::before{
+.head-left li::before{
   content: "";
   position: absolute;
   left: 0;
@@ -36,11 +35,11 @@
   transform: scaleX(0);
   transform-origin: 100% 0;
 }
-#head ul li:hover::before{
+.head-left li:hover::before{
   transform-origin: 0 0;
   transform: scaleX(1);
 }
-#head ul li:hover,.button:hover{
+.head-left li:hover,.button:hover{
   cursor: pointer;
   color: darkorange;
 }
@@ -53,7 +52,6 @@
   right: 0;
   margin: auto;
   position: absolute;
-  overflow: hidden;
 }
 .head-right{
   width: 45%;
@@ -62,7 +60,6 @@
 .head-search{
   width: 60%;
   border: 1px solid lightgray;
-  overflow: hidden;
   position: relative;
   border-radius:1rem ;
   float: left;
@@ -119,5 +116,128 @@
 }
 .login-img{
   height: 100%;
-  margin-left: 45%;
+}
+.write-blog{
+}
+.userInfo ul{
+  width: 100%;
+  height: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  float: left;
+}
+.userInfo ul li {
+  width: 50%;
+  height: 100%;
+  text-align: center;
+  float: left;
+}
+.userInfo ul li:hover{
+  cursor: pointer;
+}
+.write-blog:hover{
+  color: darkorange;
+}
+.userInfo .login-list li{
+  width: 100%;
+}
+.userInfo{
+  margin-top: 3px;
+}
+.userInfo .login-list li:hover{
+  color: darkorange;
+}
+.userInfo .login-list{
+  width: 120%;
+  margin-top: -5%;
+  margin-left: -13%;
+  height: auto;
+  overflow: hidden;
+}
+.alert-background{
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  perspective: 1300px;
+  display: none;
+}
+.alert-background .alert{
+  width: 300px;
+  height: 200px;
+  top: 50%;
+  bottom: 50%;
+  left: 50%;
+  right: 50%;
+  margin: -100px 0 0 -150px;
+  padding: 10px;
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 10px;
+  animation: alert .7s ease-in-out;
+  background-color: white;
+}
+.alert-background .alert-head{
+  height: 20%;
+  width: 100%;
+  font-size: 1.5rem;
+  border-bottom: 1px solid black;
+}
+.alert-background .alert-title{
+  float: left;
+}
+.alert-background .close{
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  line-height: 2rem;
+  text-align: center;
+  float: right;
+}
+.alert-background .alert-content{
+  width: 100%;
+  height: 50%;
+  text-align: center;
+  padding-top: 20px;
+}
+.alert-background .alert-button{
+  height: 20%;
+  width: 100%;
+}
+.alert-button div{
+  width: 50%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  font-size: 26px;
+  border: 1px solid transparent;
+  text-align: center;
+  border-radius: 2rem;
+  height: 100%;
+}
+.alert-head .close:hover{
+  cursor: pointer;
+  color: white;
+  text-shadow:0 0 5px black;
+}
+.alert-button div:hover{
+  cursor: pointer;
+  box-shadow: 0 0 10px black;
+}
+@keyframes alert {
+  0% {
+    transform: translateZ(-1000px) rotateY(80deg);
+    opacity: 1;
+    animation-timing-function: ease-in;
+  }
+  40%{
+    transform: translateZ(0px) rotateY(80deg);
+  }
+  100% {
+    transform: translateZ(0) rotateY(0deg);
+    opacity: 1;
+  }
 }

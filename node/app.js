@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(cookieSession({
     name:'key',
     keys:arr,
-    maxAge:2*3600*1000,
+    maxAge:24*3600*1000,
 }));
 
 app.all('*',function (req, res, next) {

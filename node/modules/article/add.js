@@ -1,6 +1,6 @@
 let add = (db,title,type,author,content,callback)=>{
     let result = null;
-    db.query(`INSERT INTO blog(title,type,author,date,content,like) VALUE("${title}","${type}","${author}",NOW(),"${content}")`,(err,data)=>{
+    db.query(`INSERT INTO blog(title,type,author,date,content,star,view) VALUE("${title}","${type}","${author}",NOW(),"${content}",0,0)`,(err,data)=>{
        if(err){
            result = {
                error:true,

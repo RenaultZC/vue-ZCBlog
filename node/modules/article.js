@@ -2,28 +2,28 @@ const express = require('express');
 let router = express.Router();
 const mysql = require('mysql');
 
-let db = mysql.createPool({host:'localhost',user:'web',password:'*******',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 let returnJson = require("./returnJson");
 let add = require("./article/add");
 let deleted = require("./article/delete");
 let search = require("./article/search");
+let college = require("./article/college");
+let star = require("./article/star");
 
 //add
 router.use('/add',(req,res)=>{
-    let email,title,type,author,date,content,like,callback,code,session,result;
+    let email,title,type,content,callback,code,session,result;
     if(req.body.code){
         code = req.body.code;
-        email = req.body.email;
         title = req.body.title;
         type = req.body.type;
-        author = req.body.author;
         content = req.body.content;
         callback = req.body.callback;
     }
     session = req.session['user'];
     if(session&&code){
         if(session.code===code){
-            add(db,title,type,author,content,(result)=>{
+            add(db,title,type,session.email,content,(result)=>{
                 returnJson(res,result,callback);
             });
         }else{
@@ -59,7 +59,7 @@ router.use('/delete',(req,res)=>{
     session = req.session['user'];
     if(session&&code){
         if(session.code===code){
-            deleted(db,session.email,ID,(result)=>{
+            deleted(db,ID,session.email,(result)=>{
                 returnJson(res,result,callback);
             });
         }else{
@@ -81,16 +81,74 @@ router.use('/delete',(req,res)=>{
 //update
 
 //search
-router.use('/search',(req,res)=>{
-    let email,callback,type;
+router.get('/search',(req,res)=>{
+    let flag,callback,type;
     if(req.query.type){
-        email = req.query.email;
+        flag = req.query.flag;
         type = req.query.type;
         callback =  req.query.callback;
     }
-    search(db,email,type,(result)=>{
+    search(db,flag,type,(result)=>{
         returnJson(res,result,callback);
     });
+});
+
+router.get('/college',(req,res)=>{
+    let ID,result,code,session,callback;
+    if(req.query.ID){
+        ID = req.query.ID;
+        callback = req.query.callback;
+        code = req.query.code;
+    }
+    session = req.session['user'];
+    if(code&&session){
+        if(code === session.code){
+            college(db,ID,session.email,(result)=>{
+                returnJson(res,result,callback);
+            });
+        }else{
+            result = {
+                error:true,
+                result:'信息验证错误，请重新登录'
+            };
+            returnJson(res,result,callback);
+        }
+    }else{
+        result = {
+            error:true,
+            result:'登录已过期，请重新登录'
+        };
+        returnJson(res,result,callback);
+    }
+});
+
+router.get('/star',(req,res)=>{
+    let ID,result,code,session,callback;
+    if(req.query.ID){
+        ID = req.query.ID;
+        callback = req.query.callback;
+        code = req.query.code;
+    }
+    session = req.session['user'];
+    if(code&&session){
+        if(code === session.code){
+            star(db,ID,session.email,(result)=>{
+                returnJson(res,result,callback);
+            });
+        }else{
+            result = {
+                error:true,
+                result:'信息验证错误，请重新登录'
+            };
+            returnJson(res,result,callback);
+        }
+    }else{
+        result = {
+            error:true,
+            result:'登录已过期，请重新登录'
+        };
+        returnJson(res,result,callback);
+    }
 });
 
 module.exports = router;

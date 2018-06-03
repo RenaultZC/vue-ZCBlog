@@ -11,7 +11,7 @@ let updatePassword = require('../modules/user/updatePassword');
 let forgetPassword = require('../modules/user/forgetPassword');
 let decryption = require('../modules/decryption');
 let article = require('../modules/article');
-let db = mysql.createPool({host:'localhost',user:'web',password:'*****',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 
 //register
 router.use('/register',(req,res)=>{
@@ -198,5 +198,39 @@ router.use('/forgetPassword',(req,res)=>{
 
 // article
 router.use('/article',article);
+
+//loginOut
+router.get('/loginOut',(req,res)=>{
+    let code = null,session = null,callback = null,result;
+    if(req.query.code){
+        code = req.query.code;
+        callback = req.query.callback;
+    }
+    session = req.session['user'];
+    if(session&&code){
+        if(session.code === code){
+            req.session['user'] = null;
+            result = {
+                error:false,
+                result:"退出成功"
+            };
+            returnJson(res,result,callback);
+        }else{
+            req.session['user'] = null;
+            result = {
+                error:true,
+                result:"登录状态已失效"
+            };
+            returnJson(res,result,callback);
+        }
+    }else{
+        req.session['user'] = null;
+        result = {
+            error:true,
+            result:"无登录状态"
+        };
+        returnJson(res,result,callback);
+    }
+});
 
 module.exports = router;
