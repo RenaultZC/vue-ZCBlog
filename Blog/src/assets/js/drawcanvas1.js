@@ -1,4 +1,4 @@
-let drawcanvas = ()=>{
+let drawcanvas = (that)=>{
         let canvas = document.getElementById("canvas");
         let cxt = canvas.getContext("2d");//创建画布二维环境
         let num;//决定屏幕粒子数量
@@ -74,7 +74,6 @@ let drawcanvas = ()=>{
             }
         };
         init();
-        setInterval(draw,20);
-
+        that.interval = setInterval(draw,20);
 };
 export default drawcanvas;

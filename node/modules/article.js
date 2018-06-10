@@ -9,6 +9,8 @@ let deleted = require("./article/delete");
 let search = require("./article/search");
 let college = require("./article/college");
 let star = require("./article/star");
+let getCollege = require("./article/getCollege");
+let getStar = require("./article/getStar");
 
 //add
 router.use('/add',(req,res)=>{
@@ -133,6 +135,62 @@ router.get('/star',(req,res)=>{
     if(code&&session){
         if(code === session.code){
             star(db,ID,session.email,(result)=>{
+                returnJson(res,result,callback);
+            });
+        }else{
+            result = {
+                error:true,
+                result:'信息验证错误，请重新登录'
+            };
+            returnJson(res,result,callback);
+        }
+    }else{
+        result = {
+            error:true,
+            result:'登录已过期，请重新登录'
+        };
+        returnJson(res,result,callback);
+    }
+});
+
+router.get('/getCollege',(req,res)=>{
+    let result,code,session,callback;
+    if(req.query.code){
+        callback = req.query.callback;
+        code = req.query.code;
+    }
+    session = req.session['user'];
+    if(code && session){
+        if(code === session.code){
+            getCollege(db,session.email,(result)=>{
+                returnJson(res,result,callback);
+            });
+        }else{
+            result = {
+                error:true,
+                result:'信息验证错误，请重新登录'
+            };
+            returnJson(res,result,callback);
+        }
+    }else{
+        result = {
+            error:true,
+            result:'登录已过期，请重新登录'
+        };
+        returnJson(res,result,callback);
+    }
+});
+
+router.get('/getStar',(req,res)=>{
+    let result,code,session,callback;
+    if(req.query.code){
+        callback = req.query.callback;
+        code = req.query.code;
+    }
+    session = req.session['user'];
+    if(code&&session){
+        if(code === session.code){
+            getStar(db,session.email,(result)=>{
                 returnJson(res,result,callback);
             });
         }else{

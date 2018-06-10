@@ -65,6 +65,8 @@
                       localStorage.setItem('flag',data.result.flag);
                       this.$router.back(-1);
                       this.$parent.update();
+                      this.$parent.getCollege();
+                      this.$parent.getStar();
                       this.$parent.login = true;
                     }
                   }.bind(this),

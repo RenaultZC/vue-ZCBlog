@@ -1,4 +1,4 @@
-let drawcanvas2 = function () {
+let drawcanvas2 = function (that) {
     var Canvas ={};
     Canvas.anim = {
         init:function () {
@@ -46,7 +46,7 @@ let drawcanvas2 = function () {
         }
     };
     Canvas.anim.init();
-    setInterval(function () {
+    that.interval = setInterval(function () {
         Canvas.anim.render();
     },13);
 };

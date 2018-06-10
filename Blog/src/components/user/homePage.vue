@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div v-for="item in blog" class="home-item" :blog-id='item.ID'>
+    <div  v-cloak v-for="item in blog" class="home-item" :blog-id='item.ID'>
       <span class="item-title">
         <router-link tag="b" class="item-title" :to="{path:'/myArticle',query: {ID:item.ID}}">{{item.title}}</router-link>
       </span>
@@ -10,7 +10,7 @@
       <div class="item-user">
         <img v-if="item.logo" :src="item.logo">
         <img v-else="item.logo" src="../../../static/img/avatar.png">
-        <span>{{item.author}}zc</span>
+        <span>{{item.author}}</span>
         <div class="item-point"></div>
         <span>{{item.date.slice(0,10)}}</span>
         <div class="item-point"></div>
@@ -18,8 +18,8 @@
         <router-link v-else="item.flag" to="/blogPage" tag="span" class="item-link">个人博客</router-link>
         <div class="rating">
           <span class="fa fa-eye rating-border">&ensp;{{parseInt(item.view)}}</span>
-          <span class="fa fa-thumbs-o-up rating-border" title="点赞" @click="star(item.ID)">&ensp;{{parseInt(item.star)}}</span>
-          <span class="fa fa-star" title="收藏" @click="collect(item.ID)"></span>
+          <span class="fa fa-thumbs-o-up rating-border" title="点赞" @click="star(item.ID)" :class="{active:$parent.star[item.ID]}">&ensp;{{parseInt(item.star)}}</span>
+          <span class="fa fa-star" title="收藏" @click="collect(item.ID)" :class="{active:$parent.collection[item.ID]}"></span>
         </div>
       </div>
     </div>
@@ -38,6 +38,8 @@
         },
         beforeCreate:function(){
           document.getElementById("title").innerText = "主页";
+          this.$parent.getCollege();
+          this.$parent.getStar();
           ajax({
             url:'http://localhost:1234/api/user/article/search',//window.location.origin+'/api/user/article/search',
             type:'GET',
@@ -46,6 +48,7 @@
               type:'all',
             },
             success:function (data) {
+              this.$parent.loading();
               data = JSON.parse(data);
               if(data.error){
                 this.blog = "还未曾有人发表博客";
@@ -58,35 +61,48 @@
             }
           });
         },
+      mounted(){
+        this.$parent.loading();
+      }
+      ,
       methods:{
           star:function (ID) {
             if(this.$parent.login){
               let that =event;
               let eClassName =that.target.className.split(" ");
-              if(eClassName.length === 3){
-                ajax({
-                  url:/*window.location.origin+*/"http://localhost:1234/api/user/article/star",
-                  type:"GET",
-                  data:{
-                    ID:ID,
-                    code:localStorage.code
-                  },
-                  success:function (data){
-                    data = JSON.parse(data);
-                    if(data.error){
-                      console.log(data);
-                    }else{
+              ajax({
+                url:/*window.location.origin+*/"http://localhost:1234/api/user/article/star",
+                type:"GET",
+                data:{
+                  ID:ID,
+                  code:localStorage.code
+                },
+                success:function (data){
+                  data = JSON.parse(data);
+                  if(data.error){
+                    console.log(data);
+                  }else{
+                    if(eClassName.length === 3){
                       that.target.className += " active";
+                      this.blog.forEach((item)=>{
+                        if(item.ID === ID){
+                          item.star++;
+                        }
+                      });
+                    }else if(eClassName.length === 4){
+                      that.target.className = eClassName.slice(0,3).join(" ");
+                      this.blog.forEach((item)=>{
+                        if(item.ID === ID){
+                          item.star--;
+                        }
+                      });
                     }
-                  },
-                  fail:()=>{
-                    console.log('无法发送请求');
                   }
-                });
-              }else if(eClassName.length === 4){
-                // ajax();
-                event.target.className = eClassName.slice(0,3).join(" ");
-              }
+                }.bind(this),
+                fail:()=>{
+                  console.log('无法发送请求');
+                }
+              });
             }else{
               this.$parent.Popup('用户未登录','用户尚未登录，点击确定登录后即可点赞','/login');
             }
@@ -95,8 +111,7 @@
             if(this.$parent.login){
               let that = event;
               let eClassName =that.target.className.split(" ");
-              if(eClassName.length === 2){
-                ajax({
+              ajax({
                 url:/*window.location.origin+*/"http://localhost:1234/api/user/article/college",
                 type:"GET",
                 data:{
@@ -108,17 +123,17 @@
                   if(data.error){
                     console.log(data);
                   }else{
-                    that.target.className += " active";
+                    if(eClassName.length === 2){
+                      that.target.className += ' active';
+                    }else if(eClassName.length === 3){
+                      that.target.className = eClassName.slice(0,2).join(" ");
+                    }
                   }
                 },
                 fail:()=>{
                   console.log('无法发送请求');
                 }
               });
-              }else if(eClassName.length === 3){
-                // ajax();
-                event.target.className = eClassName.slice(0,2).join(" ");
-              }
             }else{
               this.$parent.Popup('用户未登录','用户尚未登录，点击确定登录后即可收藏','/login');
             }
@@ -156,12 +171,12 @@
   }
   .item-user img{
     width: auto;
-    height: 1rem;
+    height: 1.5rem;
+    padding-right: 0.5rem;
     float: left;
   }
   .item-user span{
     float: left;
-    margin: 0 0.5rem ;
   }
   .item-user .item-point{
     width: 0;
@@ -169,7 +184,7 @@
     border-radius: 1px;
     border: 1px solid black;
     float: left;
-    margin: 0.5rem 0;
+    margin: 0.5rem 0.5rem;
   }
   .item-link:hover{
     cursor: pointer;
@@ -195,5 +210,8 @@
   .rating  .fa-thumbs-o-up:hover:before,.rating .fa-star:hover:before{
     cursor: pointer;
     color: orange;
+  }
+  [v-cloak]{
+    display: none;
   }
 </style>

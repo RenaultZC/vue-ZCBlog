@@ -21,7 +21,8 @@
         name: "home",
         data(){
            return {
-             contentMotto:""
+             contentMotto:"",
+             interval:null
            }
         },
         beforeCreate:function(){
@@ -30,19 +31,20 @@
         ,
         mounted:function (){
             let a = 1-Math.random().toFixed();
-            window.onload = ()=>{
-              if(a){
-                drawCanvas1();
-              }else{
-                drawCanvas2();
-              }
-            };
+            if(a){
+              drawCanvas1(this);
+            }else{
+              drawCanvas2(this);
+            }
             if(a){
               this.contentMotto = "弱水三千，只取一瓢";
             }else{
               this.contentMotto = "一啄一饮，莫非前定";
             }
-        }
+        },
+      beforeDestroy(){
+          clearInterval(this.interval);
+      }
     }
 </script>
 
