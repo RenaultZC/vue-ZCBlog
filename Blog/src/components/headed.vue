@@ -26,7 +26,6 @@
                 <router-link class="login-img" src="../../static/img/avatar.png" tag="img" to="userCenter" alt="头像"> </router-link>
                 <ul class="login-list" :style="{ display : loginList}">
                   <router-link to="userCenter" tag="li">个人中心</router-link>
-                  <router-link to="blogManage" tag="li">博客管理</router-link>
                   <li @click="loginOut">退出</li>
                 </ul>
               </li>
@@ -88,7 +87,10 @@
                 this.getCollege();
                 this.getStar();
                 if(data.result.logo)
-                  document.getElementsByClassName('login-img')[0].src = data.result.logo;
+                  document.getElementsByClassName('login-img')[0].src = window.URL.createObjectURL(new Blob([new Buffer(data.result.logo.data).buffer],{type:'image/jpeg'}));
+                else{
+                  document.getElementsByClassName('login-img')[0].src = '../../static/img/avatar.png';
+                }
               }else{
                 localStorage.clear();
               }
@@ -112,7 +114,10 @@
                     document.getElementsByClassName('userLogin')[0].style.display = 'none';
                     document.getElementsByClassName('userInfo')[0].style.display = 'block';
                     if(data.result.logo)
+                      document.getElementsByClassName('login-img')[0].src = window.URL.createObjectURL(new Blob([new Buffer(data.result.logo.data).buffer],{type:'image/jpeg'}));
+                    else{
                       document.getElementsByClassName('login-img')[0].src = '../../static/img/avatar.png';
+                    }
                   }
                   this.login = true;
                 }.bind(this),

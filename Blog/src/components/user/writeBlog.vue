@@ -1,8 +1,8 @@
 <template>
   <div class="writeBlog">
-    <input class="title" placeholder="请输入文章标题">
+    <input class="title" placeholder="请输入文章标题" v-model="title">
     <div id="editor">
-      <mavon-editor style="height: 100%" :toolbars="toolbars" :boxShadow="false" v-model="editorValue"> </mavon-editor>
+      <mavon-editor ref=md style="height: 100%" :toolbars="toolbars" :boxShadow="false"> </mavon-editor>
     </div>
     <div class="foot"><span class="btnPublish" title="发布博客" @click="sendBlog">发布博客</span></div>
   </div>
@@ -11,17 +11,17 @@
 <script>
   import {mavonEditor} from 'mavon-editor'
   import 'mavon-editor/dist/css/index.css'
+  import ajax from "../../assets/js/ajax"
     export default {
         name: "write-blog",
         beforeCreate(){
-          this.$nextTick(()=>{
             if(!this.$parent.login&&!localStorage.code){
               this.$router.push({path:'/login'});
             }
-          });
         },
         data(){
           return{
+            title:'',
             toolbars:{
               bold: true, // 粗体
               italic: true, // 斜体
@@ -56,9 +56,7 @@
               /* 2.2.1 */
               subfield: true, // 单双栏模式
               preview: true, // 预览
-            },
-            editorValue:'## asdasdasd\n' +
-            '![8.jpg](0)'
+            }
           }
         }
         ,
@@ -67,7 +65,35 @@
         },
         methods:{
           sendBlog:function (){
-            console.log(this.editorValue);
+            if(!this.title || !this.title.trim().length){
+              this.$parent.Popup('发布博客出错','标题不能为空');
+              this.title = '';
+            }else if(!this.$refs.md.d_render || !this.$refs.md.d_render.trim().length){
+              this.$parent.Popup('发布博客出错','内容不能为空');
+              this.$refs.md.d_value = '';
+            }else{
+              ajax({
+                url:'http://localhost:1234/api/user/article/add',
+                type:"POST",
+                data:{
+                  code:window.localStorage.code,
+                  type:'1',
+                  content:this.$refs.md.d_render,
+                  title:this.title
+                },
+                success:function (data) {
+                  data = JSON.parse(data);
+                  if(data.error){
+                    this.$parent.Popup('发布失败',data.result);
+                  }else{
+                    this.$router.push({path:'/userCenter'});
+                  }
+                }.bind(this),
+                fail:()=>{
+                  console.log("请求发不出去");
+                }
+              });
+            }
           }
         }
         ,

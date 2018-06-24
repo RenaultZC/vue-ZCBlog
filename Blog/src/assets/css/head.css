@@ -30,7 +30,7 @@
   bottom: -5px;
   width: 90px;
   height: 2px;
-  background: #87ceeb;
+  background: darkorange;
   transition: 0.5s;
   transform: scaleX(0);
   transform-origin: 100% 0;
@@ -116,6 +116,7 @@
 }
 .login-img{
   height: 100%;
+  border-radius: 100%;
 }
 .write-blog{
 }
@@ -156,6 +157,8 @@
   height: auto;
   background-color: transparent;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
 }
 .alert-background{
   top: 0;
@@ -165,6 +168,7 @@
   position: absolute;
   perspective: 1300px;
   display: none;
+  z-index: 9999;
 }
 .alert-background .alert{
   width: 300px;

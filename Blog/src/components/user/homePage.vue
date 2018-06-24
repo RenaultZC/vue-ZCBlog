@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <div  v-cloak v-for="item in blog" class="home-item" :blog-id='item.ID'>
+  <div class="home"  v-cloak>
+    <div v-for="item in blog" class="home-item" :blog-id='item.ID'>
       <span class="item-title">
         <router-link tag="b" class="item-title" :to="{path:'/myArticle',query: {ID:item.ID}}">{{item.title}}</router-link>
       </span>
@@ -19,7 +19,7 @@
         <div class="rating">
           <span class="fa fa-eye rating-border">&ensp;{{parseInt(item.view)}}</span>
           <span class="fa fa-thumbs-o-up rating-border" title="点赞" @click="star(item.ID)" :class="{active:$parent.star[item.ID]}">&ensp;{{parseInt(item.star)}}</span>
-          <span class="fa fa-star" title="收藏" @click="collect(item.ID)" :class="{active:$parent.collection[item.ID]}"></span>
+          <span class="fa fa-star" title="收藏" @click="collect(item.ID)" :class="$parent.collection[item.ID]?'active':''"></span>
         </div>
       </div>
     </div>
@@ -38,8 +38,8 @@
         },
         beforeCreate:function(){
           document.getElementById("title").innerText = "主页";
-          this.$parent.getCollege();
           this.$parent.getStar();
+          this.$parent.getCollege();
           ajax({
             url:'http://localhost:1234/api/user/article/search',//window.location.origin+'/api/user/article/search',
             type:'GET',
@@ -53,6 +53,10 @@
               if(data.error){
                 this.blog = "还未曾有人发表博客";
               }else{
+                data.result.forEach((item)=>{
+                  if(item.logo)
+                    item.logo = window.URL.createObjectURL(new Blob([new Buffer(item.logo.data).buffer],{type:'image/jpeg'}));
+                });
                 this.blog = data.result;
               }
             }.bind(this),
