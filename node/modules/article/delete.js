@@ -10,7 +10,7 @@ let deleted = (db,ID,email,callback)=>{
         }else{
             if(data.length){
                 if(data[0].author === email){
-                    db.query(`DELETE FROM WHERE ID="${ID}"`,(err,data)=>{
+                    db.query(`DELETE FROM blog WHERE ID="${ID}"`,(err,data)=>{
                         if(err){
                             result = {
                                 error:true,

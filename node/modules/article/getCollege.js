@@ -8,7 +8,7 @@ let getCollege = (db,email,callback)=>{
             };
             callback(result);
         }else{
-            db.query(`SELECT bid as ID from collection WHERE uid="${data[0].ID}"`,(err,data)=>{
+            db.query(`SELECT blog.ID,blog.title,blog.type,blog.date,blog.content,blog.star,blog.view,user.username as author,user.logo from blog left join user on user.email=blog.author WHERE blog.ID=(SELECT bid as ID from collection WHERE uid="${data[0].ID}")`,(err,data)=>{
                 if(err){
                     result = {
                         error:true,

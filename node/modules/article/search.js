@@ -2,7 +2,7 @@ let search = (db,flag,type,callback)=>{
     let result = null;
     switch (type){
         case 'email':
-            db.query(`SELECT blog.ID,blog.title,blog.type,blog.date,blog.content,blog.star,blog.view,user.username as author,user.logo from blog left join user on user.email=blog.author WHERE blog.author="${flag} ORDER BY ID DESC"`,(err,data)=>{
+            db.query(`SELECT blog.ID,blog.title,blog.date from blog left join user on user.email=blog.author WHERE blog.author="${flag}"`,(err,data)=>{
                 if(err){
                     result = {
                         error:true,
@@ -32,6 +32,10 @@ let search = (db,flag,type,callback)=>{
                         result:err
                     };
                 }else{
+                    Array.prototype.map.call(data,(item)=>{
+                        let reTag = /<(?:.|\s)*?>/g;
+                        item.content = item.content.replace(reTag,"").slice(0,100);
+                    });
                     if(data.length){
                         result = {
                             error:false,
