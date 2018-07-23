@@ -15,7 +15,7 @@ let register = (req,db,email,password,callback)=>{
                     password:password,
                     code:code
                 };
-                let link = `http://blog.zhangchaoweb.xin/activation?code=${code}&email=${email}`;
+                let link = `http://localhost:8080/#/activation/register?code=${code}&email=${email}`;
                 sendEmail(email,"激活账号",link);
                 result = {
                     error:false,

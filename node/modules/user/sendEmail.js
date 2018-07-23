@@ -5,13 +5,14 @@ let transporter = nodemailer.createTransport({
     port: 465,
     secure: true,
     auth:{
-        user:'1073294992@qq.com',
-        pass:'moyhebapbtekbcid'
+        user:'********',
+        pass:'********'
     }
 });
 
 let sendEmail = (email,date,link)=>{
     let result = null;
+    link = encodeURI(link);
     let mailOptions = {
         from:'1073294992@qq.com',
         to:email,

@@ -17,7 +17,7 @@ let forgetPassword = (req,db,email,newPassword,callback)=>{
                     email:email,
                     code:code
                 };
-                let link = `http://blog.zhangchaoweb.xin/updatePassword?code=${code}&email=${email}&newPassword=${newPassword}`;
+                let link = `http://localhost:8080/#/activation/forgetPassword?code=${code}&email=${email}&newPassword=${newPassword}`;
                 sendEmail(email,"更改密码",link);
                 result = {
                     error:false,

@@ -1,6 +1,8 @@
 const express = require('express');
 const mysql = require('mysql');
+const multer = require('multer');
 
+let upload = multer();
 let router = express.Router();
 let register = require('../modules/user/register');
 let login = require('../modules/user/login');
@@ -9,9 +11,10 @@ let returnJson = require('../modules/returnJson');
 let getInfo = require('../modules/user/getInfo');
 let updatePassword = require('../modules/user/updatePassword');
 let forgetPassword = require('../modules/user/forgetPassword');
+let changeInfo = require('../modules/user/changeInfo');
 let decryption = require('../modules/decryption');
 let article = require('../modules/article');
-let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'****',password:'*****',database:'blog'});
 
 //register
 router.use('/register',(req,res)=>{
@@ -25,8 +28,8 @@ router.use('/register',(req,res)=>{
         password = req.query.password;
         callback = req.query.callback;
     }
-    password = decryption(password);
-    if(username){
+    if(username&&password){
+        password = decryption(password);
         register(req,db,username,password,(result)=>{
             returnJson(res,result,callback);
         });
@@ -79,7 +82,6 @@ router.use('/activation',(req,res)=>{
     }
     session = req.session['user'];
     if(code && session){
-        req.session['user'] = null;
         activation(db,code,session,(result)=>{
             returnJson(res,result,callback);
         })
@@ -88,12 +90,13 @@ router.use('/activation',(req,res)=>{
             error:true,
             result:"注册失败，请重新注册"
         };
-        returnJson(result);
+        returnJson(res,result,callback);
     }else{
         result = {
             error:true,
             result:"注册码已过期或清除cookie"
-        }
+        };
+        returnJson(res,result,callback);
     }
 });
 
@@ -174,13 +177,13 @@ router.use('/updatePassword',(req,res)=>{
 //forgetPassword
 router.use('/forgetPassword',(req,res)=>{
     let newPassword,email,callback,result = null;
-    if(req.body.email){
-        email = req.body.email;
-        newPassword = req.body.newPassword;
+    if(req.body.username){
+        email = req.body.username;
+        newPassword = req.body.password;
         callback = req.body.callback;
-    }else if(req.query.email){
-        email = req.query.email;
-        newPassword = req.query.newPassword;
+    }else if(req.query.username){
+        email = req.query.username;
+        newPassword = req.query.password;
         callback = req.query.callback;
     }
     newPassword = decryption(newPassword);
@@ -228,6 +231,39 @@ router.get('/loginOut',(req,res)=>{
         result = {
             error:true,
             result:"无登录状态"
+        };
+        returnJson(res,result,callback);
+    }
+});
+
+router.use('/changeInfo', upload.any(),(req,res)=>{
+    let code,type,result,session,callback,value;
+    if(req.body.code){
+        code = req.body.code;
+        value = req.body.value;
+        type = req.body.type;
+        callback = req.body.callback;
+    }
+    session = req.session['user'];
+    if(session&&code){
+        if(session.code === code){
+            if(type == '1'){
+                value = req.files[0].buffer;
+            }
+            changeInfo(db,session.email,type,value,(result)=>{
+                returnJson(res,result,callback);
+            });
+        }else{
+            result = {
+                error:true,
+                result:"登录状态已失效"
+            };
+            returnJson(res,result,callback);
+        }
+    }else{
+        result = {
+            error:'true',
+            result:'用户未登录'
         };
         returnJson(res,result,callback);
     }

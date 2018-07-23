@@ -33,6 +33,15 @@ let search = (db,flag,type,callback)=>{
                     };
                 }else{
                     Array.prototype.map.call(data,(item)=>{
+                        let reg = /<img[^>]*>/gi;
+                        let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+                        let img = item.content.match(reg);
+                        item.img = null;
+                        if(img){
+                            if(img[0].match(srcReg)){
+                                item.img = img[0].match(srcReg)[1];
+                            }
+                        }
                         let reTag = /<(?:.|\s)*?>/g;
                         item.content = item.content.replace(reTag,"").slice(0,100);
                     });

@@ -11,7 +11,7 @@ let star = (db,ID,email,callback)=>{
             if(data.length){
                 uid = data[0].uid;
                 bid = data[0].bid;
-                db.query(`SELECT * FROM star WHERE bid=${uid} AND uid=${bid}`,(err,data)=>{
+                db.query(`SELECT * FROM star WHERE bid=${bid} AND uid=${uid}`,(err,data)=>{
                     if(err){
                         result = {
                             error:true,

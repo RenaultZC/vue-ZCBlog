@@ -1,8 +1,21 @@
 const express = require('express');
 let router = express.Router();
 const mysql = require('mysql');
+const multer = require('multer');
 
-let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
+let storage = multer.diskStorage({
+    //设置上传后文件路径，uploads文件夹会自动创建。
+    destination: function (req, file, cb) {
+        cb(null, 'static/img')
+    },
+    //给上传文件重命名，获取添加后缀名
+    filename: function (req, file, cb) {
+        let fileFormat = (file.originalname).split(".");
+        cb(null,'article-' + Date.now() + "." + fileFormat[fileFormat.length - 1]);
+    }
+});
+let upload = multer({storage:storage});
+let db = mysql.createPool({host:'localhost',user:'****',password:'*******',database:'blog'});
 let returnJson = require("./returnJson");
 let add = require("./article/add");
 let deleted = require("./article/delete");
@@ -13,7 +26,7 @@ let getCollege = require("./article/getCollege");
 let getStar = require("./article/getStar");
 
 //add
-router.use('/add',(req,res)=>{
+router.post('/add',(req,res)=>{
     let email,title,type,content,callback,code,session,result;
     if(req.body.code){
         code = req.body.code;
@@ -46,17 +59,15 @@ router.use('/add',(req,res)=>{
 
 //delete
 router.use('/delete',(req,res)=>{
-    let code,session,result = null,email,ID,callback;
+    let code,session,result = null,ID,callback;
     if(req.query.code){
         code = req.query.code;
         ID = req.query.ID;
         callback = req.query.callback;
-        email = req.query.email;
     }else if(req.body.code){
         code = req.body.code;
         ID = req.body.ID;
         callback = req.body.callback;
-        email = req.body.email;
     }
     session = req.session['user'];
     if(session&&code){
@@ -89,6 +100,11 @@ router.get('/search',(req,res)=>{
         flag = req.query.flag;
         type = req.query.type;
         callback =  req.query.callback;
+    }
+    if(type === 'email'){
+        if(req.session['user']){
+            flag = req.session['user'].email;
+        }
     }
     search(db,flag,type,(result)=>{
         returnJson(res,result,callback);
@@ -193,6 +209,36 @@ router.get('/getStar',(req,res)=>{
             getStar(db,session.email,(result)=>{
                 returnJson(res,result,callback);
             });
+        }else{
+            result = {
+                error:true,
+                result:'信息验证错误，请重新登录'
+            };
+            returnJson(res,result,callback);
+        }
+    }else{
+        result = {
+            error:true,
+            result:'登录已过期，请重新登录'
+        };
+        returnJson(res,result,callback);
+    }
+});
+
+router.use('/addImg',upload.any(),(req,res)=>{
+    let result,code,session,callback;
+    if(req.body.code){
+        callback = req.body.callback;
+        code = req.body.code;
+    }
+    session = req.session['user'];
+    if(code&&session){
+        if(code === session.code){
+            result = {
+                error:false,
+                result:req.files[0].filename
+            };
+            returnJson(res,result,callback);
         }else{
             result = {
                 error:true,
