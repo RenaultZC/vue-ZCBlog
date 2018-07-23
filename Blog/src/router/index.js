@@ -12,6 +12,7 @@ import login from '@/components/user/login'
 import register from '@/components/user/register'
 import forgetPassword from '@/components/user/forgetPassword'
 import myArticle from '@/components/user/myArticle'
+import activation from '@/components/user/activation'
 import writeBlog from '@/components/user/writeBlog'
 
 Vue.use(Router);
@@ -38,6 +39,7 @@ export default new Router({
         {name:'myArticle',path:'/myArticle',component:myArticle},
         {name:'writeBlog',path:'/writeBlog',component:writeBlog},
         {name:'userCenter',path:'/userCenter',component:userCenter},
+        {name:'activation',path:'/activation/:type',component:activation},
       ]
     },
     {

@@ -6,7 +6,7 @@
           <router-link to="/homePage" tag="li"> 首页</router-link>
           <router-link to="/blogPage" tag="li">博客</router-link>
           <router-link to="/algorithmPage" tag="li">算法总结</router-link>
-          <router-link to="/introducePage" tag="li">自我介绍</router-link>
+          <!--<router-link to="/introducePage" tag="li">自我介绍</router-link>-->
         </ul>
         <div class="head-right">
           <div class="head-search">
@@ -201,7 +201,7 @@
                 if(data.error){
                   this.star = {};
                 }else{
-                  this.collection = {};
+                  this.star = {};
                   for(let i in data.result){
                     this.star[data.result[i].ID] = true;
                   }

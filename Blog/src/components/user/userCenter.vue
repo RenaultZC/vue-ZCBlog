@@ -29,7 +29,7 @@
             <div class="article" v-for="item in article">
               <router-link class="article-title" tag="p" :to="{path:'/myArticle',query: {ID:item.ID}}">{{item.title}}</router-link>
               <span class="delete-article fa fa-trash" @click="deleteArticle(item.ID)" title="删除博客"></span>
-                <p class="article-time">{{item.date.slice(0,-5).split('T').join(' ')}}</p>
+                <p class="article-time">{{item.date.slice(0,-5).split('T')[0]}}</p>
             </div>
           </div>
           <div v-else >

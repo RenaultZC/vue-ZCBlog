@@ -2,9 +2,21 @@
   <div class="writeBlog">
     <input class="title" placeholder="请输入文章标题" v-model="title">
     <div id="editor">
-      <mavon-editor ref=md style="height: 100%" :toolbars="toolbars" :boxShadow="false"> </mavon-editor>
+      <mavon-editor
+        ref=md
+        style="height: 100%"
+        :toolbars="toolbars"
+        :boxShadow="false"
+        @imgAdd="$imgAdd"
+      > </mavon-editor>
     </div>
-    <div class="foot"><span class="btnPublish" title="发布博客" @click="sendBlog">发布博客</span></div>
+    <div class="foot">
+      <span class="btnPublish" title="发布博客" @click="sendBlog">发布博客</span>
+      <select class="type" v-model="type">
+        <option value="个人博客">个人博客</option>
+        <option value="算法总结">算法总结</option>
+      </select>
+    </div>
   </div>
 </template>
 
@@ -16,12 +28,12 @@
         name: "write-blog",
         beforeCreate(){
             if(!this.$parent.login&&!localStorage.code){
-              this.$router.push({path:'/login'});
-            }
+              this.$router.push({path:'/login'});    }
         },
         data(){
           return{
             title:'',
+            type:'个人博客',
             toolbars:{
               bold: true, // 粗体
               italic: true, // 斜体
@@ -72,15 +84,18 @@
               this.$parent.Popup('发布博客出错','内容不能为空');
               this.$refs.md.d_value = '';
             }else{
-              ajax({
+              let type = this.type==='算法总结'?'0':'1';
+              let data = {
+                code:window.localStorage.code,
+                type:type,
+                content:this.$refs.md.d_render,
+                title:this.title
+              };
+              $.ajax({
                 url:'http://localhost:1234/api/user/article/add',
                 type:"POST",
-                data:{
-                  code:window.localStorage.code,
-                  type:'1',
-                  content:this.$refs.md.d_render,
-                  title:this.title
-                },
+                xhrFields: {withCredentials: true},
+                data:data,
                 success:function (data) {
                   data = JSON.parse(data);
                   if(data.error){
@@ -89,11 +104,58 @@
                     this.$router.push({path:'/userCenter'});
                   }
                 }.bind(this),
-                fail:()=>{
+                error:function (data){
                   console.log("请求发不出去");
                 }
               });
+              // ajax({
+              //   url:'http://localhost:1234/api/user/article/add',
+              //   type:"POST",
+              //   data:{
+              //     code:window.localStorage.code,
+              //     type:'1',
+              //     content:this.$refs.md.d_render,
+              //     title:this.title
+              //   },
+              //   success:function (data) {
+              //     data = JSON.parse(data);
+              //     if(data.error){
+              //       this.$parent.Popup('发布失败',data.result);
+              //     }else{
+              //       this.$router.push({path:'/userCenter'});
+              //     }
+              //   }.bind(this),
+              //   fail:()=>{
+              //     console.log("请求发不出去");
+              //   }
+              // });
             }
+          },
+          $imgAdd(pos, $file){
+            let formdata = new FormData();
+            formdata.append("img", $file);
+            formdata.append('code',localStorage.code);
+            $.ajax({
+              url:'http://localhost:1234/api/user/article/addImg',
+              type:'POST',
+              processData: false,
+              contentType: false,
+              xhrFields: {withCredentials: true},
+              data: formdata,
+              success:function (data) {
+                data = JSON.parse(data);
+                if(data.error){
+                  this.$parent.Popup('上传出错',data.result);
+                }else{
+                  this.$refs.md.$imgUpdateByUrl(pos,'http://localhost:1234/api/static/img/'+data.result);
+                  // this.$refs.md.$img2Url(pos,'http://localhost:1234/api/static/img/'+data.result);
+                  // this.$refs.md.$refs.toolbar_left.$imgDelByFilename();
+                }
+              }.bind(this),
+              error:function (data){
+                console.log(data);
+              }
+            });
           }
         }
         ,
@@ -145,5 +207,13 @@
     cursor: pointer;
     color: skyblue;
     background-color: transparent;
+  }
+  .type{
+    float: right;
+    padding: 10px;
+    margin: 20px 1rem auto;
+    font-size: 1rem;
+    outline: none;
+    border-radius: 5px;
   }
 </style>

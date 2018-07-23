@@ -3,7 +3,7 @@
     <div class="forget-form">
       <input id="username" type="text" placeholder="请输入电子邮箱" @keyup.enter="forget">
       <input id="password" type="password" placeholder="请输入新密码" @keyup.enter="forget">
-      <input id="forget" type="submit" value="登录" @click="forget">
+      <input id="forget" type="submit" value="确认" @click="forget">
     </div>
   </div>
 </template>

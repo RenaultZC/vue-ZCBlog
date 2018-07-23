@@ -9,10 +9,15 @@
     </div>
 </template>
 <script>
+    import ajax from "../../assets/js/ajax";
+    import encryption from "../../assets/js/encryption";
     export default {
         name: "register",
       beforeCreate:function () {
         document.getElementById("title").innerText = "注册";
+        if(this.$parent.login){
+          this.$router.push({name:'homePage'});
+        }
       },
       mounted:function () {
         document.getElementsByClassName("registerPage")[0].style.height = window.innerHeight - 100 + "px";
@@ -27,8 +32,8 @@
             let username = user.value;
             let password = pass.value;
             let Repassword = Repass.value;
-
             if(username && password && Repassword){
+              console.log(usernameReg.test(username),passwordReg.test(password))
                   if(!usernameReg.test(username)){
                     user.placeholder = "请输入正确邮箱";
                     Repass.placeholder = "请输入密码";
@@ -48,6 +53,37 @@
                     Repass.className = "";
                     pass.value = "";
                     Repass.value = "";
+                  }else{
+                    password = encryption(password);
+                    ajax({
+                      url:/*window.location.origin+*/"http://localhost:1234/api/user/register",
+                      type:"POST",
+                      data:{
+                        username:username,
+                        password:password
+                      },
+                      success:function (data){
+                        data = JSON.parse(data);
+                        if(data.error){
+                          if(data.result === "注册失败，此邮箱已存在"){
+                            user.value = "";
+                            pass.value = "";
+                            Repass.value = "";
+                            user.placeholder = "请重新输入邮箱";
+                            user.className = "error";
+                            pass.className = "";
+                            Repass.className = "";
+                          }else{
+                            this.$parent.Popup("注册失败","网络请求忙请稍后再试");
+                          }
+                        }else{
+                          this.$parent.Popup("注册成功","注册成功请前往邮箱激活账号");
+                        }
+                      }.bind(this),
+                      fail:()=>{
+                        console.log('无法发送请求');
+                      }
+                    });
                   }
             }else if(!username){
               user.placeholder = "请输入电子邮箱";

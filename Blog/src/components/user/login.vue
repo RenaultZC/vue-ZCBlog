@@ -19,6 +19,9 @@
         name: "login",
       beforeCreate:function(){
         document.getElementById("title").innerText = "登录";
+        if(this.$parent.login){
+          this.$router.push({name:'homePage'});
+        }
       },
       mounted:function () {
         document.getElementsByClassName("loginPage")[0].style.height = window.innerHeight - 100 + "px";
@@ -63,7 +66,7 @@
                     }else{
                       localStorage.setItem('code',data.result.code);
                       localStorage.setItem('flag',data.result.flag);
-                      this.$router.back(-1);
+                      this.$router.push({name:'homePage'});
                       this.$parent.update();
                       this.$parent.getCollege();
                       this.$parent.getStar();

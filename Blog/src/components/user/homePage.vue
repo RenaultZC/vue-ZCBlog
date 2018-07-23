@@ -1,28 +1,32 @@
 <template>
   <div class="home"  v-cloak>
     <div v-for="item in blog" class="home-item" :blog-id='item.ID'>
-      <span class="item-title">
-        <router-link tag="b" class="item-title" :to="{path:'/myArticle',query: {ID:item.ID}}">{{item.title}}</router-link>
-      </span>
-      <div class="item-content">
-        <p>{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}{{item.content}}</p>
-      </div>
-      <div class="item-user">
-        <img v-if="item.logo" :src="item.logo">
-        <img v-else="item.logo" src="../../../static/img/avatar.png">
-        <span>{{item.author}}</span>
-        <div class="item-point"></div>
-        <span>{{item.date.slice(0,10)}}</span>
-        <div class="item-point"></div>
-        <router-link v-if="item.flag" to="/algorithmPage" tag="span" class="item-link">算法总结</router-link>
-        <router-link v-else="item.flag" to="/blogPage" tag="span" class="item-link">个人博客</router-link>
-        <div class="rating">
-          <span class="fa fa-eye rating-border">&ensp;{{parseInt(item.view)}}</span>
-          <span class="fa fa-thumbs-o-up rating-border" title="点赞" @click="star(item.ID)" :class="{active:$parent.star[item.ID]}">&ensp;{{parseInt(item.star)}}</span>
-          <span class="fa fa-star" title="收藏" @click="collect(item.ID)" :class="$parent.collection[item.ID]?'active':''"></span>
+      <router-link tag="div" :to="{path:'/myArticle',query: {ID:item.ID}}" :style="{backgroundImage:'url('+(item.img?item.img:'../static/img/blogImg.gif')+')'}" class="item-img"> </router-link>
+      <div class="item-info">
+        <span class="item-title">
+          <router-link tag="b" class="item-title" :to="{path:'/myArticle',query: {ID:item.ID}}">{{item.title}}</router-link>
+        </span>
+        <div class="item-content">
+          <p>{{item.content+'...'}}</p>
+        </div>
+        <div class="item-user">
+          <img v-if="item.logo" :src="item.logo">
+          <img v-else="item.logo" src="../../../static/img/avatar.png">
+          <span>{{item.author}}</span>
+          <div class="item-point"></div>
+          <span>{{item.date}}</span>
+          <div class="item-point"></div>
+          <router-link v-if="item.type===0" to="/algorithmPage" tag="span" class="item-link">算法总结</router-link>
+          <router-link v-else to="/blogPage" tag="span" class="item-link">个人博客</router-link>
+          <div class="rating">
+            <span class="fa fa-eye rating-border" title="阅读量">&ensp;{{parseInt(item.view)}}</span>
+            <span class="fa fa-thumbs-o-up rating-border" title="点赞" @click="star(item.ID)" :class="{active:$parent.star[item.ID]}">&ensp;{{parseInt(item.star)}}</span>
+            <span class="fa fa-star" title="收藏" @click="collect(item.ID)" :class="$parent.collection[item.ID]?'active':''"></span>
+          </div>
         </div>
       </div>
     </div>
+    <p v-if="blog===[]" style="font-size: 2rem;text-align: center">目前还没有用户发表博客</p>
   </div>
 </template>
 
@@ -32,7 +36,7 @@
         name: "home-page",
         data(){
           return {
-            blog:[],
+            blog:null,
             login:window.localStorage.login
           }
         },
@@ -51,11 +55,12 @@
               this.$parent.loading();
               data = JSON.parse(data);
               if(data.error){
-                this.blog = "还未曾有人发表博客";
+                this.blog = [];
               }else{
                 data.result.forEach((item)=>{
                   if(item.logo)
                     item.logo = window.URL.createObjectURL(new Blob([new Buffer(item.logo.data).buffer],{type:'image/jpeg'}));
+                  item.date = item.date.slice(0,10);
                 });
                 this.blog = data.result;
               }
@@ -101,6 +106,7 @@
                         }
                       });
                     }
+                    this.$parent.getStar();
                   }
                 }.bind(this),
                 fail:()=>{
@@ -132,8 +138,9 @@
                     }else if(eClassName.length === 3){
                       that.target.className = eClassName.slice(0,2).join(" ");
                     }
+                    this.$parent.getCollege();
                   }
-                },
+                }.bind(this),
                 fail:()=>{
                   console.log('无法发送请求');
                 }
@@ -148,12 +155,14 @@
 
 <style scoped>
   .home{
-    width: 720px;
+    width: 70%;
+    min-width: 720px;
     margin: 0 auto;
   }
   .home-item{
     padding: 10px 0;
     border-bottom: 1px solid black;
+    overflow: hidden;
   }
   .item-title{
     line-height: 2rem;
@@ -205,9 +214,6 @@
     margin: 0;
     line-height: 1.5rem;
   }
-  .rating span{
-    font-size: 1.5rem;
-  }
   .rating .active:before{
     color: orange;
   }
@@ -217,5 +223,20 @@
   }
   [v-cloak]{
     display: none;
+  }
+  .item-img{
+    float: left;
+    width: 18%;
+    margin: 0 1%;
+    height: 110px;
+    border-radius: 5px;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
+  .item-info{
+    width: 80%;
+    float: left;
   }
 </style>
