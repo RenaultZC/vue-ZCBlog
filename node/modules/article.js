@@ -15,7 +15,7 @@ let storage = multer.diskStorage({
     }
 });
 let upload = multer({storage:storage});
-let db = mysql.createPool({host:'localhost',user:'****',password:'*******',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 let returnJson = require("./returnJson");
 let add = require("./article/add");
 let deleted = require("./article/delete");

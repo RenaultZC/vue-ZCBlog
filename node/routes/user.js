@@ -14,7 +14,7 @@ let forgetPassword = require('../modules/user/forgetPassword');
 let changeInfo = require('../modules/user/changeInfo');
 let decryption = require('../modules/decryption');
 let article = require('../modules/article');
-let db = mysql.createPool({host:'localhost',user:'****',password:'*****',database:'blog'});
+let db = mysql.createPool({host:'localhost',user:'web',password:'19980527',database:'blog'});
 
 //register
 router.use('/register',(req,res)=>{
